@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quadratic Solver & Grade Converter</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 40px;
+    background: #f4f6f8;
+    color: #222;
+  }
+  h1, h2 { color: #003366; }
+  form {
+    background: white;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+  input[type=number] {
+    width: 100px;
+    padding: 5px;
+    margin-right: 10px;
+  }
+  button {
+    padding: 6px 12px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: #0066cc;
+    color: white;
+    cursor: pointer;
+  }
+  button:hover { background-color: #004999; }
+  .result, .error { margin-top: 10px; font-weight: bold; }
+  .error { color: red; }
+</style>
+</head>
+<body>
+
+<h1>Quadratic Equation Solver & Grade Converter</h1>
+<p>Enter values below to calculate roots of a quadratic equation or convert a numeric score into a letter grade.</p>
+
+<!-- Quadratic Solver -->
+<form id="quadForm">
+  <h2>Quadratic Equation Solver</h2>
+  <label>a: <input type="number" id="a" required></label>
+  <label>b: <input type="number" id="b" required></label>
+  <label>c: <input type="number" id="c" required></label><br><br>
+  <button type="button" onclick="solveQuadratic()">Compute</button>
+  <button type="reset" onclick="clearQuad()">Reset</button>
+  <div id="quadError" class="error"></div>
+  <div id="quadResult" class="result"></div>
+</form>
+
+<!-- Grading System -->
+<form id="gradeForm">
+  <h2>Grading System</h2>
+  <label>Score (0–100): <input type="number" id="score" required></label><br><br>
+  <button type="button" onclick="computeGrade()">Compute</button>
+  <button type="reset" onclick="clearGrade()">Reset</button>
+  <div id="gradeError" class="error"></div>
+  <div id="gradeResult" class="result"></div>
+</form>
+
+<script>
+// Quadratic Solver
+function solveQuadratic() {
+  const a = parseFloat(document.getElementById("a").value);
+  const b = parseFloat(document.getElementById("b").value);
+  const c = parseFloat(document.getElementById("c").value);
+  const err = document.getElementById("quadError");
+  const res = document.getElementById("quadResult");
+  err.textContent = "";
+  res.textContent = "";
+
+  if (isNaN(a) || isNaN(b) || isNaN(c)) {
+    err.textContent = "Please enter valid numbers for a, b, and c.";
+    return;
+  }
+  if (a === 0) {
+    err.textContent = "Coefficient 'a' cannot be zero for a quadratic equation.";
+    return;
+  }
+
+  const D = b*b - 4*a*c;
+  let message = `Discriminant (D) = ${D.toFixed(2)}<br>`;
+
+  if (D > 0) {
+    const root1 = (-b + Math.sqrt(D)) / (2*a);
+    const root2 = (-b - Math.sqrt(D)) / (2*a);
+    message += `Two distinct real roots:<br>x₁ = ${root1.toFixed(3)}, x₂ = ${root2.toFixed(3)}`;
+  } else if (D === 0) {
+    const root = -b / (2*a);
+    message += `One real repeated root:<br>x = ${root.toFixed(3)}`;
+  } else {
+    const realPart = (-b / (2*a)).toFixed(3);
+    const imagPart = (Math.sqrt(-D) / (2*a)).toFixed(3);
+    message += `Two complex conjugate roots:<br>x₁ = ${realPart} + ${imagPart}i, x₂ = ${realPart} - ${imagPart}i`;
+  }
+  res.innerHTML = message;
+}
+
+function clearQuad() {
+  document.getElementById("quadError").textContent = "";
+  document.getElementById("quadResult").textContent = "";
+}
+
+// Grading System
+function computeGrade() {
+  const score = parseInt(document.getElementById("score").value);
+  const err = document.getElementById("gradeError");
+  const res = document.getElementById("gradeResult");
+  err.textContent = "";
+  res.textContent = "";
+
+  if (isNaN(score)) {
+    err.textContent = "Please enter a valid number.";
+    return;
+  }
+  if (score < 0 || score > 100) {
+    err.textContent = "Score must be between 0 and 100.";
+    return;
+  }
+
+  let grade = "";
+  if (score >= 85) grade = "A+";
+  else if (score >= 75) grade = "A";
+  else if (score >= 65) grade = "B+";
+  else if (score >= 60) grade = "B";
+  else if (score >= 55) grade = "C+";
+  else if (score >= 50) grade = "C";
+  else grade = "D";
+
+  res.textContent = `Score ${score} → Grade ${grade}`;
+}
+
+function clearGrade() {
+  document.getElementById("gradeError").textContent = "";
+  document.getElementById("gradeResult").textContent = "";
+}
+</script>
+</body>
+</html>
